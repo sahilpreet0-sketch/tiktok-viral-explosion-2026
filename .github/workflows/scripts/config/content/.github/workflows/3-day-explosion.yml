@@ -1,0 +1,90 @@
+name: 3-Day TikTok Explosion
+on:
+  schedule:
+    - cron: '*/4 * * * *'  # Every 4 hours for 3 days
+  workflow_dispatch:
+
+jobs:
+  day-1-explosion:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.run_number <= 8
+    steps:
+    - name: CHECKPOINT - DAY 1: FOUNDATION
+      run: echo "🚀 DAY 1: Building viral foundation..."
+    
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+        
+    - name: Find Top 5 Viral Trends
+      run: python scripts/trend_analyzer.py
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+        REDDIT_SECRET: ${{ secrets.REDDIT_SECRET }}
+        
+    - name: Create 8 Viral Videos (Day 1)
+      run: |
+        for i in {1..8}; do
+          python scripts/viral_script_generator.py
+          python scripts/video_creator.py
+          python scripts/tiktok_poster.py
+          sleep 1800  # Post every 30 minutes
+        done
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        STABILITY_API_KEY: ${{ secrets.STABILITY_API_KEY }}
+        ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        
+  day-2-virality:
+    needs: day-1-explosion
+    runs-on: ubuntu-latest
+    if: github.run_number > 8 && github.run_number <= 16
+    steps:
+    - name: CHECKPOINT - DAY 2: VIRALITY
+      run: echo "🔥 DAY 2: Going viral..."
+    
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Create 12 Optimized Videos (Day 2)
+      run: |
+        for i in {1..12}; do
+          python scripts/create_sequel_videos.py
+          sleep 1200  # Post every 20 minutes
+        done
+        
+  day-3-monetization:
+    needs: day-2-virality
+    runs-on: ubuntu-latest
+    if: github.run_number > 16
+    steps:
+    - name: CHECKPOINT - DAY 3: MONETIZATION
+      run: echo "💰 DAY 3: Monetizing virality..."
+    
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Create 6 Premium Videos (Day 3)
+      run: |
+        for i in {1..6}; do
+          python scripts/create_premium_content.py
+          sleep 2400  # Post every 40 minutes
+        done
